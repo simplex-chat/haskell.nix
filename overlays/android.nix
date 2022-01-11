@@ -11,8 +11,9 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
     '';
     # my current thinking is that this is due to the android toolchain using r23, api30.
   });
-  libffi = prev.libffi.overrideAttrs (_: {
+  libffi = prev.libffi.overrideAttrs ( old: {
     dontDisableStatic = true;
+    configureFlags = old.configureFlags ++ [ "--disable-shared" ];
 
     hardeningDisable = [ "fortify" "stackprotector" "format" ];
     # see libiconv. We want to target a lower minsdk
@@ -20,9 +21,10 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
       echo "#undef HAVE_MEMFD_CREATE" >> aarch64-unknown-linux-android/fficonfig.h
     '';
   });
-  gmp6 = (prev.gmp6.override { withStatic = true; }).overrideAttrs(_: {
+  gmp6 = (prev.gmp6.override { withStatic = true; }).overrideAttrs(old: {
     hardeningDisable = [ "fortify" "stackprotector" "format" ];
+    configureFlags = old.configureFlags ++ [ "--disable-shared" ];
   });
 }) // prev.lib.optionalAttrs prev.stdenv.targetPlatform.isAndroid ({
-  bionic = prev.bionic.override { enableStatic = true; };
+  bionic = prev.bionic.override { enableStatic = true; enableShared = false; };
 })
