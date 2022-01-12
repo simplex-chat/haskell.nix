@@ -25,6 +25,8 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
     hardeningDisable = [ "fortify" "stackprotector" "format" ];
     configureFlags = old.configureFlags ++ [ "--disable-shared" ];
   });
+  zlib = prev.zlib.override { shared = false; static = true; };
+  
 }) // prev.lib.optionalAttrs prev.stdenv.targetPlatform.isAndroid ({
   bionic = prev.bionic.override { enableStatic = true; enableShared = false; };
 })
