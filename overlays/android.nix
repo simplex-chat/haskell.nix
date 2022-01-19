@@ -28,5 +28,7 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
   zlib = prev.zlib.override { shared = false; static = true; };
   
 }) // prev.lib.optionalAttrs prev.stdenv.targetPlatform.isAndroid ({
-  bionic = prev.bionic.override { enableStatic = true; enableShared = false; };
+  # we still need the shared libraries to link against on the platform.  GHC
+  # has been neutered to not even try loading shared libs and will use dynamic ones.
+  bionic = prev.bionic.override { enableStatic = true; enableShared = true; };
 })
