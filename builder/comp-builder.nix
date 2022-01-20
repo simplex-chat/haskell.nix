@@ -439,12 +439,12 @@ let
       '' else if stdenv.hostPlatform.isGhcjs then ''
         runHook preBuild
         # https://gitlab.haskell.org/ghc/ghc/issues/9221
-        $SETUP_HS build ${haskellLib.componentTarget componentId} ${lib.concatStringsSep " " setupBuildFlags}
+        $SETUP_HS build ${haskellLib.componentTarget componentId} ${lib.concatStringsSep " " (component.setupBuildFlags ++ setupBuildFlags)}
         runHook postBuild
       '' else ''
         runHook preBuild
         # https://gitlab.haskell.org/ghc/ghc/issues/9221
-        $SETUP_HS build ${haskellLib.componentTarget componentId} -j$(($NIX_BUILD_CORES > 4 ? 4 : $NIX_BUILD_CORES)) ${lib.concatStringsSep " " setupBuildFlags}
+        $SETUP_HS build ${haskellLib.componentTarget componentId} -j$(($NIX_BUILD_CORES > 4 ? 4 : $NIX_BUILD_CORES)) ${lib.concatStringsSep " " (component.setupBuildFlags ++ setupBuildFlags)}
         runHook postBuild
       '');
 
