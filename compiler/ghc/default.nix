@@ -348,6 +348,32 @@ stdenv.mkDerivation (rec {
     '';
 
   configurePlatforms = [ "build" "host" "target" ];
+  # `--with` flags for libraries needed for RTS linker
+  configureFlags = [
+        "--datadir=$doc/share/doc/ghc"
+        "--with-curses-includes=${targetPackages.ncurses.dev}/include" "--with-curses-libraries=${targetPackages.ncurses.out}/lib"
+    ] ++ lib.optionals (targetLibffi != null) ["--with-system-libffi" "--with-ffi-includes=${targetLibffi.dev}/include" "--with-ffi-libraries=${targetLibffi.out}/lib"
+    ] ++ lib.optional (!enableIntegerSimple) [
+        "--with-gmp-includes=${targetGmp.dev}/include" "--with-gmp-libraries=${targetGmp.out}/lib"
+    ] ++ lib.optional (targetPlatform == hostPlatform && hostPlatform.libc != "glibc" && !targetPlatform.isWindows) [
+        "--with-iconv-includes=${libiconv}/include" "--with-iconv-libraries=${libiconv}/lib"
+    ] ++ lib.optional (targetPlatform != hostPlatform) [
+        "--with-iconv-includes=${targetIconv}/include" "--with-iconv-libraries=${targetIconv}/lib"
+    ] ++ lib.optionals (targetPlatform != hostPlatform) [
+        "--enable-bootstrap-with-devel-snapshot"
+    ] ++ lib.optionals (disableLargeAddressSpace) [
+        "--disable-large-address-space"
+    ] ++ lib.optionals (targetPlatform.isAarch32) [
+        "CFLAGS=-fuse-ld=gold"
+        "CONF_GCC_LINKER_OPTS_STAGE1=-fuse-ld=gold"
+        "CONF_GCC_LINKER_OPTS_STAGE2=-fuse-ld=gold"
+    ] ++ lib.optionals enableDWARF [
+        "--enable-dwarf-unwind"
+        "--with-libdw-includes=${lib.getDev elfutils}/include"
+        "--with-libdw-libraries=${lib.getLib elfutils}/lib"
+    ] ++ lib.optionals (targetPlatform.isDarwin) [
+        "--without-libcharset"
+    ];
 
   enableParallelBuilding = true;
   postPatch = "patchShebangs .";
