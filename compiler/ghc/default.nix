@@ -177,6 +177,8 @@ let
     SplitSections = NO
   '' + lib.optionalString (!enableLibraryProfiling) ''
     BUILD_PROF_LIBS = NO
+  '' + lib.optionalString (disableLargeAddressSpace) ''
+    libraries/base_CONFIGURE_OPTS += --configure-option=--with-libcharset=no
   '';
 
   # `--with` flags for libraries needed for RTS linker
