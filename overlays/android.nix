@@ -26,7 +26,7 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
     configureFlags = old.configureFlags ++ [ "--disable-shared" ];
   });
   zlib = prev.zlib.override { shared = false; static = true; };
-  numactl = (prev.numactl.overrideAttrs (attrs: {
+  numactl = prev.numactl.overrideAttrs (attrs: {
      patches = attrs.patches + [ ./patches/numactl-2.0.14-no-librt.patch ];
   });
 }) // prev.lib.optionalAttrs prev.stdenv.targetPlatform.isAndroid ({
