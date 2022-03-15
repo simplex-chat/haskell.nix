@@ -14,6 +14,8 @@ config:
 
 , shellHook
 
+, THSupport
+
 , ...
 }@pkg:
 
@@ -136,6 +138,7 @@ let
   buildComp = allComponent: componentId: component: comp-builder {
     inherit allComponent componentId component package name src flags setup cabalFile cabal-generator patches
             shellHook
+            THSupport
             ;
   };
 

@@ -49,20 +49,20 @@ final: prev:
           # `-fexternal-interpreter` would install here.  That would ultimately
           # result in cyclic dependencies as it injects `remote-iserv` and
           # `iserv-proxy` as a dependency into every package.
-          bytestring.setupBuildFlags = [];
-          containers.setupBuildFlags = [];
-          binary.setupBuildFlags = [];
-          filepath.setupBuildFlags = [];
-          time.setupBuildFlags = [];
-          Win32.setupBuildFlags = [];
-          libiserv.setupBuildFlags = [];
-          remote-iserv.setupBuildFlags = [];
-          directory.setupBuildFlags = [];
-          ghc-boot.setupBuildFlags = [];
-          transformers.setupBuildFlags = [];
-          ghci.setupBuildFlags = [];
-          network.setupBuildFlags = [];
-          unix.setupBuildFlags = [];
+          bytestring.THSupport = {};
+          containers.THSupport = {};
+          binary.THSupport = {};
+          filepath.THSupport = {};
+          time.THSupport = {};
+          Win32.THSupport = {};
+          libiserv.THSupport = {};
+          remote-iserv.THSupport = {};
+          directory.THSupport = {};
+          ghc-boot.THSupport = {};
+          transformers.THSupport = {};
+          ghci.THSupport = {};
+          network.THSupport = {};
+          unix.THSupport = {};
         };
       }// withTH
       )
