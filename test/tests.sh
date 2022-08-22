@@ -197,4 +197,18 @@ if [ "$TESTS" == "hix" ] || [ "$TESTS" == "all" ]; then
   echo >& 2
 fi
 
+if [ "$TESTS" == "nixprof" ]; then
+  printf "*** Profile flakes development shell ...\n" >& 2
+  nixprof record nix build $NIX_BUILD_ARGS \
+     --accept-flake-config \
+     -I . -I .. \
+     --option restrict-eval true \
+     --option allowed-uris "https://github.com/NixOS https://github.com/input-output-hk" \
+     --no-link --keep-going -f default.nix \
+     --argstr compiler-nix-name $GHC \
+     --arg CADerivationsEnabled $NIX_CA_DERIVATIONS
+  nixprof report
+  echo >& 2
+fi
+
 printf "\n*** Finished successfully\n" >& 2
