@@ -116,7 +116,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     { packages = { cabal-install = ./.plan.nix/cabal-install.nix; }; };
   modules = [
     ({ lib, ... }:

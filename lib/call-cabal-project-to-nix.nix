@@ -1,4 +1,4 @@
-{ pkgs, runCommand, cacert, index-state-hashes, haskellLib }@defaults:
+{ pkgs, runCommand, cacert, index-state-hashes, haskellLib }:
 let readIfExists = src: fileName:
       # Using origSrcSubDir bypasses any cleanSourceWith.
       let origSrcDir = src.origSrcSubDir or src;
@@ -166,8 +166,6 @@ let
       in builtins.trace ("No index state specified" + (if name == null then "" else " for " + name) + ", using the latest index state that we know about (${latest-index-state})!") latest-index-state;
 
   index-state-pinned = index-state != null || cabalProjectIndexState != null;
-
-  pkgconfPkgs = import ./pkgconf-nixpkgs-map.nix pkgs;
 
 in
   assert (if index-state-found == null

@@ -36,7 +36,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     { packages = { alex = ./.plan.nix/alex.nix; }; };
   modules = [
     ({ lib, ... }:

@@ -37,8 +37,8 @@ let
 
   hackageConfigs =
     lib.flip lib.mapAttrs config.hackage.db
-      (pname: lib.mapAttrs
-        (vnum: version: version // {
+      (_pname: lib.mapAttrs
+        (_vnum: version: version // {
           revisions =
             let
               rev2Config = rev: { system, compiler, flags, pkgs, hsPkgs, pkgconfPkgs, ... }@modArgs: {

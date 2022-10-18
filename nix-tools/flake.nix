@@ -13,7 +13,7 @@
           (x: !__elem "${system}.${x}" ci.disable)
           (ci.compiler);
         overlays = [ haskellNix.overlay
-          (final: prev: {
+          (final: _prev: {
             hixProject =
               final.haskell-nix.hix.project {
                 src = ./.;

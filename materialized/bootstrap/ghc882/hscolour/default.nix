@@ -24,7 +24,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     { packages = { hscolour = ./.plan.nix/hscolour.nix; }; };
   modules = [
     ({ lib, ... }:

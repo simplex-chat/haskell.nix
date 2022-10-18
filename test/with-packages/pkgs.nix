@@ -134,7 +134,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     {
       packages = { test-with-packages = ./.plan.nix/test-with-packages.nix; };
       };

@@ -51,7 +51,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     {
       packages = {
         remote-iserv = ./.plan.nix/remote-iserv.nix;

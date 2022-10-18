@@ -306,7 +306,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     {
       packages = {
         nix-tools = ./.plan.nix/nix-tools.nix;

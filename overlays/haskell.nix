@@ -105,7 +105,7 @@ final: prev: {
             { stack-pkgs  # Path to the output of stack-to-nix
             , pkg-def-extras ? []
             , modules ? []
-            }@args:
+            }:
             let
                 # The Stackage release referenced in the stack config
                 pkg-def = stackage.${stack-pkgs.resolver} or (throw ''
@@ -568,7 +568,7 @@ final: prev: {
             appendOverlays = extraOverlays: self.extend (final.lib.composeManyExtensions ([self.__overlay__] ++ extraOverlays));
           }));
          in rawProject:
-          makeExtensible (final: prev: {}) (project':
+          makeExtensible (_final: _prev: {}) (project':
             let project = project' // { recurseForDerivations = false; };
             in rawProject // rec {
               # It is often handy to be able to get nix pkgs from the project.

@@ -4,9 +4,8 @@
 }: {
   # Provide a devshell profile (https://github.com/numtide/devshell),
   # adapted from the project normal shell.
-  devshell = final: prev: {
-    devshell = let
-    in {
+  devshell = final: _prev: {
+    devshell = {
       packages = final.shell.nativeBuildInputs
       # Cannot add the whole final.shell.buildInputs list because many collide with each other when fused.
       # So we only add what is really used (by pkg-config):
@@ -35,7 +34,7 @@
 
   # Provides easily accessible attrset for each type of
   # components belonging to the project packages.
-  projectComponents = final: prev: {
+  projectComponents = final: _prev: {
     # local project packages:
     packages = haskellLib.selectProjectPackages final.hsPkgs;
     # set of all exes (as first level entries):

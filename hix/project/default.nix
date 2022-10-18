@@ -15,37 +15,6 @@ let
       (import ../../modules/cabal-project.nix)
       (import ../../modules/project.nix)
       (import ../../modules/hix-project.nix)
-      projectDefaults
-      commandArgs'
-      { _module.args.pkgs = {}; }
-    ];
-  }).config) name;
-  inherit (import ./../.. {}) sources;
-  lib = import (sources.nixpkgs-unstable + "/lib");
-  commandArgs' =
-    builtins.listToAttrs (
-      builtins.concatMap (
-        name:
-          if commandArgs.${name} == null || name == "src" || name == "userDefaults" || name == "inNixShell"
-            then []
-            else [{ inherit name; value = commandArgs.${name}; }]
-    ) (builtins.attrNames commandArgs));
-  defaultArgs = {
-    nixpkgsPin = "nixpkgs-unstable";
-  };
-  importDefaults = src:
-    if src == null || !(__pathExists src)
-      then {}
-      else import src;
-  userDefaults = importDefaults (commandArgs.userDefaults or null);
-  projectDefaults = importDefaults (toString (src.origSrcSubDir or src) + "/nix/hix.nix");
-  inherit ((lib.evalModules {
-    modules = [
-      (import ../../modules/project-common.nix)
-      (import ../../modules/stack-project.nix)
-      (import ../../modules/cabal-project.nix)
-      (import ../../modules/project.nix)
-      (import ../../modules/hix-project.nix)
       userDefaults
       projectDefaults
       commandArgs'
@@ -73,5 +42,5 @@ let
           ];
       })
     ];
-  }).config) project shell;
+  }).config) project;
 in project

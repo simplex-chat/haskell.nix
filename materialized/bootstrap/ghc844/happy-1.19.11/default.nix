@@ -50,7 +50,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     { packages = { happy = ./.plan.nix/happy.nix; }; };
   modules = [
     ({ lib, ... }:

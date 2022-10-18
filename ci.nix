@@ -20,7 +20,7 @@
       permittedInsecurePackages = ["libdwarf-20210528" "libdwarf-20181024" "dwarfdump-20181024"];
     };
   };
-  compilerNixNames = nixpkgsName: nixpkgs: builtins.mapAttrs (compiler-nix-name: runTests: {
+  compilerNixNames = nixpkgsName: nixpkgs: builtins.mapAttrs (_compiler-nix-name: runTests: {
     inherit runTests;
   }) (
     # GHC version to cache and whether to run the tests against them.
@@ -39,7 +39,7 @@
       ghc902 = false;
       ghc924 = true;
     });
-  systems = nixpkgsName: nixpkgs: compiler-nix-name: nixpkgs.lib.genAttrs (
+  systems = _nixpkgsName: nixpkgs: compiler-nix-name: nixpkgs.lib.genAttrs (
     nixpkgs.lib.filter (v:
         # We have less x86_64-darwin build capacity so build fewer GhC versions
         (v != "x86_64-darwin" || (
@@ -76,7 +76,7 @@ dimension "Nixpkgs version" nixpkgsVersions (nixpkgsName: nixpkgs-pin:
   let pinnedNixpkgsSrc = sources.${nixpkgs-pin};
       evalPackages = import pinnedNixpkgsSrc nixpkgsArgs;
   in dimension "GHC version" (compilerNixNames nixpkgsName evalPackages) (compiler-nix-name: {runTests}:
-    dimension "System" (systems nixpkgsName evalPackages compiler-nix-name) (systemName: system:
+    dimension "System" (systems nixpkgsName evalPackages compiler-nix-name) (_systemName: system:
       let pkgs = import pinnedNixpkgsSrc (nixpkgsArgs // { inherit system; });
           build = import ./build.nix { inherit pkgs evalPackages ifdLevel compiler-nix-name; };
           platformFilter = platformFilterGeneric pkgs system;

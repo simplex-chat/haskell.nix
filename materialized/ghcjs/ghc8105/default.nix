@@ -345,7 +345,7 @@
           };
         };
       };
-  extras = hackage:
+  extras = _hackage:
     {
       packages = {
         ghcjs-th = ./.plan.nix/ghcjs-th.nix;

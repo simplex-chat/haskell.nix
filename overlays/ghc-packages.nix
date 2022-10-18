@@ -1,4 +1,4 @@
-final: prev:
+final: _prev:
 let
   callCabal2Nix = compiler-nix-name: name: src: final.buildPackages.stdenv.mkDerivation {
     name = "${name}-package.nix";
