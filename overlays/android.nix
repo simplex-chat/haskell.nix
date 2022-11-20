@@ -29,6 +29,7 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
   numactl = prev.numactl.overrideAttrs (attrs: {
      patches = (attrs.patches or []) ++ [ ./patches/numactl-2.0.14-no-librt.patch ];
   });
+  openssl = prev.openssl_1_1;
 }) // prev.lib.optionalAttrs prev.stdenv.targetPlatform.isAndroid ({
   # we still need the shared libraries to link against on the platform.  GHC
   # has been neutered to not even try loading shared libs and will use dynamic ones.
