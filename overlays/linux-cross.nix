@@ -76,4 +76,4 @@ let
 
   enableShared = lib.mkDefault (!isLinuxCross);
 
-in { THSupport = { inherit preCheck postCheck configureFlags setupBuildFlags testWrapper enableShared; }; }
+in { inherit preCheck postCheck configureFlags setupBuildFlags testWrapper enableShared; }
