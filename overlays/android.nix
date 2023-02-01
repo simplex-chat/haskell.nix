@@ -16,9 +16,10 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
     configureFlags = old.configureFlags ++ [ "--disable-shared" ];
 
     hardeningDisable = [ "fortify" "stackprotector" "format" ];
+  } // prev.lib.optionalAttrs (prev.stdenv.hostPlatform.isAarch32 || prev.stdenv.hostPlatform.isAarch64) {
     # see libiconv. We want to target a lower minsdk
     postConfigure = ''
-      echo "#undef HAVE_MEMFD_CREATE" >> aarch64-unknown-linux-android/fficonfig.h
+      echo "#undef HAVE_MEMFD_CREATE" >> ${prev.stdenv.hostPlatform.config}/fficonfig.h
     '';
   });
   gmp6 = (prev.gmp6.override { withStatic = true; }).overrideAttrs(old: {
@@ -26,12 +27,15 @@ final: prev: prev.lib.optionalAttrs prev.stdenv.hostPlatform.isAndroid ({
     configureFlags = old.configureFlags ++ [ "--disable-shared" ];
   });
   zlib = prev.zlib.override { shared = false; static = true; };
-  numactl = prev.numactl.overrideAttrs (attrs: {
-     patches = (attrs.patches or []) ++ [ ./patches/numactl-2.0.14-no-librt.patch ];
-  });
-  openssl = prev.openssl_1_1;
+  # kernel tls (ktls) doesn't work with the android kernel. And will complain
+  # about lots of implicitly declared functions and undeclared identifiers,
+  # because the android (linux) kernel doesn't expose those.
+  openssl = prev.openssl.override { static = true; enableKTLS = false; };
+  
 }) // prev.lib.optionalAttrs prev.stdenv.targetPlatform.isAndroid ({
   # we still need the shared libraries to link against on the platform.  GHC
   # has been neutered to not even try loading shared libs and will use dynamic ones.
+  # We also link iserv against the static libs, so that we have a fully static
+  # android (bionic/linux) iserv we can execute on glibc/linux.
   bionic = prev.bionic.override { enableStatic = true; enableShared = true; };
 })

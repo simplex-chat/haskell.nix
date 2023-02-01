@@ -46,9 +46,9 @@ let self =
 
 , enableDWARF ? false
 
-, enableTerminfo ?
+, enableTerminfo ? !stdenv.targetPlatform.isAndroid &&
     # Terminfo does not work on older ghc cross arm and windows compilers
-     (!haskell-nix.haskellLib.isCrossTarget || !(stdenv.targetPlatform.isAarch64 || stdenv.targetPlatform.isWindows) || builtins.compareVersions ghc-version "8.10" >= 0)
+     (!haskell-nix.haskellLib.isCrossTarget || !(stdenv.targetPlatform.isAarch32 || stdenv.targetPlatform.isAarch64 || stdenv.targetPlatform.isWindows) || builtins.compareVersions ghc-version "8.10" >= 0)
 
 , # Wheter to build in NUMA support
   enableNUMA ? true
@@ -196,7 +196,7 @@ let
         "--enable-bootstrap-with-devel-snapshot"
     ] ++ lib.optionals (disableLargeAddressSpace) [
         "--disable-large-address-space"
-    ] ++ lib.optionals useLdGold [
+    ] ++ lib.optionals (targetPlatform.isAarch32 && !targetPlatform.isAndroid) [
         "CFLAGS=-fuse-ld=gold"
         "CONF_GCC_LINKER_OPTS_STAGE1=-fuse-ld=gold"
         "CONF_GCC_LINKER_OPTS_STAGE2=-fuse-ld=gold"
@@ -295,7 +295,11 @@ stdenv.mkDerivation (rec {
         export CC="${targetCC}/bin/${targetCC.targetPrefix}cc"
         export CXX="${targetCC}/bin/${targetCC.targetPrefix}c++"
         # Use gold to work around https://sourceware.org/bugzilla/show_bug.cgi?id=16177
+<<<<<<< HEAD
         export LD="${targetCC.bintools}/bin/${targetCC.bintools.targetPrefix}ld${lib.optionalString useLdGold ".gold"}"
+=======
+        export LD="${targetCC.bintools}/bin/${targetCC.bintools.targetPrefix}ld${lib.optionalString (targetPlatform.isAarch32 && !targetPlatform.isAndroid) ".gold"}"
+>>>>>>> 5d7ff101 (Support for armv7a-bionic (android))
         export AS="${targetCC.bintools.bintools}/bin/${targetCC.bintools.targetPrefix}as"
         export AR="${targetCC.bintools.bintools}/bin/${targetCC.bintools.targetPrefix}ar"
         export NM="${targetCC.bintools.bintools}/bin/${targetCC.bintools.targetPrefix}nm"
@@ -319,7 +323,10 @@ stdenv.mkDerivation (rec {
         export NIX_LDFLAGS+=" -rpath $out/lib/${targetPrefix}ghc-${ghc-version}"
     '' + lib.optionalString stdenv.isDarwin ''
         export NIX_LDFLAGS+=" -no_dtrace_dof"
-    '' + lib.optionalString targetPlatform.useAndroidPrebuilt ''
+    '' + 
+    # we really want "+armv7-a,+soft-float,+neon" as features, but llvm will 
+    # fail with those :facepalm:
+    lib.optionalString targetPlatform.useAndroidPrebuilt ''
         sed -i -e '5i ,("armv7a-unknown-linux-androideabi", ("e-m:e-p:32:32-i64:64-v128:64:128-a:0:32-n32-S64", "cortex-a8", ""))' llvm-targets
     '' + lib.optionalString targetPlatform.isMusl ''
         echo "patching llvm-targets for musl targets..."
@@ -415,7 +422,7 @@ stdenv.mkDerivation (rec {
                    ++ lib.optional stdenv.targetPlatform.isAarch32 "pic"
                    ++ lib.optional stdenv.targetPlatform.isMusl "pie";
 
-  postInstall = lib.optionalString (enableNUMA && targetPlatform.isLinux) ''
+  postInstall = lib.optionalString (enableNUMA && targetPlatform.isLinux && !targetPlatform.isAarch32 && !targetPlatform.isAndroid) ''
     # Patch rts.conf to ensure libnuma can be found
 
     for file in $(find "$out/lib" -name "rts*.conf"); do
