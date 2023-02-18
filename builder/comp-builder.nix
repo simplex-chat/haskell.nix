@@ -434,7 +434,7 @@ let
       # See also https://gitlab.haskell.org/ghc/ghc/-/issues/12935
       (if contentAddressed then ''
         runHook preBuild
-        $SETUP_HS build ${haskellLib.componentTarget componentId} -j1 ${lib.concatStringsSep " " setupBuildFlags}
+        $SETUP_HS build ${haskellLib.componentTarget componentId} -j1 ${lib.concatStringsSep " " (component.setupBuildFlags ++ setupBuildFlags)}
         runHook postBuild
       '' else if stdenv.hostPlatform.isGhcjs then ''
         runHook preBuild
