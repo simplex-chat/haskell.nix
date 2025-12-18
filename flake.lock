@@ -269,11 +269,11 @@
     "hackage": {
       "flake": false,
       "locked": {
-        "lastModified": 1765931246,
-        "narHash": "sha256-47ZRo98c192rgdFRQKXmxQ7FVHRyHrQSPMyod/kNxV0=",
+        "lastModified": 1766018217,
+        "narHash": "sha256-G5NnlxJdn4B0az0ZmN1S4wpqPWqiCOrdWjQrxSVdEC4=",
         "owner": "input-output-hk",
         "repo": "hackage.nix",
-        "rev": "c2c9f30356beb4b560d78be1673c5116c353bdff",
+        "rev": "39b82eab5323b723845e0ea6da9fc5358e88f934",
         "type": "github"
       },
       "original": {
